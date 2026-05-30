@@ -27,6 +27,8 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 body {
@@ -38,6 +40,8 @@ body {
   min-height: 100vh;
   min-height: 100dvh;
   overflow-x: hidden;
+  max-width: 100%;
+  overscroll-behavior-x: none;
 }
 
 img {
@@ -165,6 +169,17 @@ body.page-enter-active {
 
 .nav-backdrop.is-open {
   display: block;
+  animation: nav-backdrop-in 0.32s ease;
+}
+
+@keyframes nav-backdrop-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 body.nav-open {
@@ -1030,6 +1045,14 @@ body.nav-open .site-header {
 
 /* Mobile nav */
 @media (max-width: 768px) {
+  :root {
+    --nav-drawer-width: min(280px, 85vw);
+  }
+
+  body {
+    touch-action: pan-y;
+  }
+
   .nav-toggle {
     display: flex;
   }
@@ -1037,31 +1060,38 @@ body.nav-open .site-header {
   .nav {
     position: fixed;
     top: 0;
-    right: 0;
-    width: min(280px, 85vw);
+    right: calc(-1 * var(--nav-drawer-width));
+    width: var(--nav-drawer-width);
     height: 100vh;
     height: 100dvh;
     background: var(--white);
     flex-direction: column;
     align-items: flex-start;
-    padding: 5rem 2rem 2rem;
+    padding: max(5rem, calc(env(safe-area-inset-top) + 3.5rem)) 2rem 2rem;
+    padding-right: max(2rem, env(safe-area-inset-right));
     gap: 1.5rem;
     box-shadow: -8px 0 32px var(--shadow);
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
+    transition: right 0.32s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 200;
     overflow-y: auto;
+    pointer-events: none;
+    visibility: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   .nav a,
   .nav .btn {
+    width: 100%;
     min-height: 44px;
     display: inline-flex;
     align-items: center;
+    font-size: 1.05rem;
   }
 
   .nav.is-open {
-    transform: translateX(0);
+    right: 0;
+    pointer-events: auto;
+    visibility: visible;
   }
 
   .nav-toggle.is-open span:nth-child(1) {
