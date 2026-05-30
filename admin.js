@@ -33,13 +33,21 @@ function setToken(token) {
   else sessionStorage.removeItem(TOKEN_KEY);
 }
 
+function fetchWithTimeout(url, options = {}, ms = 15000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), ms);
+  return fetch(url, { ...options, signal: controller.signal }).finally(() =>
+    clearTimeout(id)
+  );
+}
+
 function api(path, options = {}) {
   const headers = { ...(options.headers || {}) };
   const token = getToken();
   if (token) headers.Authorization = `Bearer ${token}`;
   if (options.body) headers["Content-Type"] = "application/json";
 
-  return fetch(path, { ...options, headers }).then(async (res) => {
+  return fetchWithTimeout(path, { ...options, headers }).then(async (res) => {
     const data = await res.json().catch(() => ({}));
     if (res.status === 401) {
       signOut();
@@ -159,10 +167,12 @@ async function loadOrders() {
     renderOrders(orders);
     return orders;
   } catch (err) {
-    showOrdersError(
-      err.message ||
-        "Could not load orders. Check KV_REST_API_URL and KV_REST_API_TOKEN on Render, then redeploy."
-    );
+    const msg =
+      err.name === "AbortError"
+        ? "Request timed out. Check Upstash keys on Render and redeploy."
+        : err.message ||
+          "Could not load orders. Check KV_REST_API_URL and KV_REST_API_TOKEN on Render.";
+    showOrdersError(msg);
     throw err;
   }
 }
@@ -186,7 +196,7 @@ loginForm?.addEventListener("submit", async (e) => {
   }
 
   try {
-    const health = await fetch("/api/health").then((r) => r.json());
+    const health = await fetchWithTimeout("/api/health").then((r) => r.json());
     if (!health.ok) throw new Error("Server not ready");
 
     if (health.storage === "upstash-kv" && health.database === "error") {
@@ -196,7 +206,7 @@ loginForm?.addEventListener("submit", async (e) => {
       );
     }
 
-    const res = await fetch("/api/admin/login", {
+    const res = await fetchWithTimeout("/api/admin/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password }),

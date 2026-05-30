@@ -14,14 +14,6 @@ const ROOT = __dirname;
 
 app.use(express.json({ limit: "100kb" }));
 
-// Serve static files (HTML, CSS, JS, images)
-app.use(
-  express.static(ROOT, {
-    index: ["index.html"],
-    extensions: ["html", "css", "js", "jpg", "png", "ico", "svg"],
-  })
-);
-
 function sendPublicFile(res, filePath) {
   const full = path.join(ROOT, filePath);
   if (fs.existsSync(full)) {
@@ -30,12 +22,7 @@ function sendPublicFile(res, filePath) {
   return res.status(404).send("Not found");
 }
 
-// Explicit routes so JS/CSS always load on cloud hosts
-app.get("/nav.js", (req, res) => sendPublicFile(res, "nav.js"));
-app.get("/order.js", (req, res) => sendPublicFile(res, "order.js"));
-app.get("/main.js", (req, res) => sendPublicFile(res, "main.js"));
-app.get("/admin.js", (req, res) => sendPublicFile(res, "admin.js"));
-app.get("/styles.css", (req, res) => sendPublicFile(res, "styles.css"));
+// ——— API routes FIRST (before static, so /api/* is never served as .js files) ———
 
 app.get("/api/health", async (req, res) => {
   const { useKv, readOrders } = require("./lib/orders-store");
@@ -87,7 +74,7 @@ app.post("/api/orders", async (req, res) => {
     res.status(201).json({ ok: true, id: order.id });
   } catch (err) {
     console.error("POST /api/orders", err);
-    res.status(500).json({ error: "Could not save order" });
+    res.status(500).json({ error: err.message || "Could not save order" });
   }
 });
 
@@ -135,7 +122,7 @@ app.patch("/api/orders/:id", async (req, res) => {
     res.json(orders[index]);
   } catch (err) {
     console.error("PATCH /api/orders", err);
-    res.status(500).json({ error: "Could not update order" });
+    res.status(500).json({ error: err.message || "Could not update order" });
   }
 });
 
@@ -152,15 +139,29 @@ app.delete("/api/orders/:id", async (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     console.error("DELETE /api/orders", err);
-    res.status(500).json({ error: "Could not delete order" });
+    res.status(500).json({ error: err.message || "Could not delete order" });
   }
 });
+
+// ——— Static site (HTML, CSS, JS, images) ———
+
+app.use(
+  express.static(ROOT, {
+    index: ["index.html"],
+    extensions: ["html", "css", "js", "jpg", "png", "ico", "svg"],
+  })
+);
+
+app.get("/nav.js", (req, res) => sendPublicFile(res, "nav.js"));
+app.get("/order.js", (req, res) => sendPublicFile(res, "order.js"));
+app.get("/main.js", (req, res) => sendPublicFile(res, "main.js"));
+app.get("/admin.js", (req, res) => sendPublicFile(res, "admin.js"));
+app.get("/styles.css", (req, res) => sendPublicFile(res, "styles.css"));
 
 getAdminPassword().then((password) => {
   app.listen(PORT, () => {
     console.log(`Angel Bakes running at http://localhost:${PORT}`);
     console.log(`Admin: http://localhost:${PORT}/admin.html`);
     console.log(`Admin password: ${password}`);
-    console.log(`Local orders file: data/orders.json`);
   });
 });
