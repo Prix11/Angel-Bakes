@@ -1,6 +1,9 @@
-const PRICE_PER_PIECE = 35;
-const PRICE_FOR_THREE = 100;
 const PACK_SIZE = 3;
+
+const PRICES = {
+  "choco-chip": { perPiece: 35, forThree: 100 },
+  biscoff: { perPiece: 45, forThree: 130 },
+};
 
 const cart = new Map();
 
@@ -8,16 +11,20 @@ function formatPHP(amount) {
   return `₱${amount.toLocaleString("en-PH")}`;
 }
 
-function calculatePiecesPrice(qty) {
+function getPrices(itemId) {
+  return PRICES[itemId] || PRICES["choco-chip"];
+}
+
+function calculatePiecesPrice(qty, prices) {
   const packs = Math.floor(qty / PACK_SIZE);
   const singles = qty % PACK_SIZE;
-  return packs * PRICE_FOR_THREE + singles * PRICE_PER_PIECE;
+  return packs * prices.forThree + singles * prices.perPiece;
 }
 
 function getCartTotal() {
   let total = 0;
-  cart.forEach(({ qty }) => {
-    total += calculatePiecesPrice(qty);
+  cart.forEach(({ id, qty }) => {
+    total += calculatePiecesPrice(qty, getPrices(id));
   });
   return total;
 }
@@ -46,10 +53,10 @@ function initOrderPage() {
     }
 
     cartLines.innerHTML = "";
-    cart.forEach(({ name, qty }) => {
+    cart.forEach(({ id, name, qty }) => {
       const li = document.createElement("li");
       const pieceLabel = qty === 1 ? "pc" : "pcs";
-      li.innerHTML = `<span>${qty} ${pieceLabel} ${name}</span><span>${formatPHP(calculatePiecesPrice(qty))}</span>`;
+      li.innerHTML = `<span>${qty} ${pieceLabel} ${name}</span><span>${formatPHP(calculatePiecesPrice(qty, getPrices(id)))}</span>`;
       cartLines.appendChild(li);
     });
 
@@ -69,7 +76,7 @@ function initOrderPage() {
     if (qty === 0) {
       cart.delete(id);
     } else {
-      cart.set(id, { name, qty });
+      cart.set(id, { id, name, qty });
     }
 
     renderCart();
@@ -109,11 +116,11 @@ function initOrderPage() {
 
   function buildOrderPayload(formData) {
     const orderItems = [];
-    cart.forEach(({ name, qty }) => {
+    cart.forEach(({ id, name, qty }) => {
       orderItems.push({
         name,
         qty,
-        subtotal: calculatePiecesPrice(qty),
+        subtotal: calculatePiecesPrice(qty, getPrices(id)),
       });
     });
 

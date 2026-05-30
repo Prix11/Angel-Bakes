@@ -747,7 +747,12 @@ body.nav-open {
   padding: 0;
   max-width: 420px;
   width: calc(100% - 2rem);
+  margin: auto;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .order-success::backdrop {
@@ -757,6 +762,14 @@ body.nav-open {
 .order-success-inner {
   padding: 2.5rem 2rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-success-inner .btn {
+  margin: 0 auto;
 }
 
 .success-icon {
@@ -783,6 +796,9 @@ body.nav-open {
   color: var(--brown-soft);
   margin-bottom: 1.5rem;
   font-size: 0.95rem;
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .hidden {

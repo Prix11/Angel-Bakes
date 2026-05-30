@@ -30,7 +30,7 @@
   <main class="order-main">
     <header class="order-header">
       <h1>Place Your Order</h1>
-      <p>₱35 per piece · ₱100 for 3 pieces · Mix and match flavors</p>
+      <p>Choco chip: ₱35/pc · ₱100/3 pcs · Biscoff: ₱45/pc · ₱130/3 pcs</p>
     </header>
 
     <div class="order-layout">
@@ -58,7 +58,7 @@
           <div class="order-item-info">
             <h3>Biscoff Cookie</h3>
             <p class="order-item-desc">Cookie-butter swirl, warm spice, caramelized edges.</p>
-            <p class="order-item-price">₱35 / pc · ₱100 / 3 pcs</p>
+            <p class="order-item-price">₱45 / pc · ₱130 / 3 pcs</p>
             <div class="qty-control">
               <button type="button" class="qty-btn" data-action="decrease" aria-label="Decrease pieces">−</button>
               <input type="number" class="qty-input" value="0" min="0" max="99" aria-label="Pieces of Biscoff Cookie" />
@@ -103,16 +103,16 @@
         </form>
       </aside>
     </div>
-
-    <dialog class="order-success" id="order-success">
-      <div class="order-success-inner">
-        <div class="success-icon" aria-hidden="true">✓</div>
-        <h2>Order Received!</h2>
-        <p id="success-message"></p>
-        <button type="button" class="btn btn-primary" id="success-close">Order More Cookies</button>
-      </div>
-    </dialog>
   </main>
+
+  <dialog class="order-success" id="order-success">
+    <div class="order-success-inner">
+      <div class="success-icon" aria-hidden="true">✓</div>
+      <h2>Order Received!</h2>
+      <p id="success-message"></p>
+      <button type="button" class="btn btn-primary" id="success-close">Order More Cookies</button>
+    </div>
+  </dialog>
 
   <footer class="site-footer">
     <p class="footer-brand">Angel Bakes</p>
