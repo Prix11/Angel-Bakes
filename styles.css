@@ -26,6 +26,7 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -35,6 +36,8 @@ body {
   background: var(--cream);
   line-height: 1.6;
   min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
 }
 
 img {
@@ -64,6 +67,8 @@ a {
   align-items: center;
   justify-content: space-between;
   padding: 1.25rem 2rem;
+  padding-left: max(1.25rem, env(safe-area-inset-left));
+  padding-right: max(1.25rem, env(safe-area-inset-right));
   position: sticky;
   top: 0;
   z-index: 100;
@@ -714,7 +719,7 @@ body.nav-open {
   width: 100%;
   padding: 0.65rem 0.85rem;
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 16px;
   border: 2px solid rgba(92, 61, 74, 0.1);
   border-radius: 10px;
   background: var(--cream);
@@ -1103,5 +1108,84 @@ body.nav-open {
 
   .admin-order-top {
     flex-direction: column;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .site-header {
+    padding-top: max(0.85rem, env(safe-area-inset-top));
+    padding-bottom: 0.85rem;
+  }
+
+  .logo {
+    font-size: 1.4rem;
+  }
+
+  .logo-cookie {
+    width: 32px;
+    height: 32px;
+  }
+
+  .hero {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.25rem, 10vw, 3rem);
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  .menu-preview,
+  .about,
+  .cta-band,
+  .order-main,
+  .admin-main {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  .order-header h1 {
+    font-size: 2rem;
+  }
+
+  .btn {
+    min-height: 44px;
+  }
+
+  .price {
+    font-size: 1.1rem;
+  }
+}
+
+/* Tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .hero {
+    padding: 3rem 1.5rem 4rem;
+    gap: 2rem;
+  }
+
+  .menu-grid {
+    gap: 1.5rem;
+  }
+
+  .order-layout {
+    grid-template-columns: 1fr 320px;
+    gap: 1.5rem;
+  }
+}
+
+/* Large screens */
+@media (min-width: 1200px) {
+  .hero h1 {
+    font-size: 4.5rem;
   }
 }
