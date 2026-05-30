@@ -33,3 +33,40 @@
     el.addEventListener("click", () => setOpen(false));
   });
 })();
+
+(function initLogoTransition() {
+  const logo = document.querySelector(".logo");
+  if (!logo) return;
+
+  function isHomePath(pathname) {
+    const p = pathname.replace(/\/$/, "") || "/";
+    return p === "" || p === "/" || p === "/index.html";
+  }
+
+  document.body.classList.add("page-enter");
+  requestAnimationFrame(() => {
+    document.body.classList.add("page-enter-active");
+  });
+
+  logo.addEventListener("click", (e) => {
+    const href = logo.getAttribute("href") || "/";
+    const currentPath = window.location.pathname;
+    const target = new URL(href, window.location.origin);
+
+    if (!isHomePath(target.pathname)) return;
+
+    if (isHomePath(currentPath)) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    e.preventDefault();
+    document.body.classList.remove("page-enter", "page-enter-active");
+    document.body.classList.add("page-leaving");
+
+    window.setTimeout(() => {
+      window.location.href = target.pathname + target.hash;
+    }, 320);
+  });
+})();

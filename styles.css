@@ -80,6 +80,32 @@ a {
   font-size: 1.75rem;
   font-weight: 600;
   letter-spacing: -0.02em;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.logo:hover {
+  opacity: 0.88;
+}
+
+.logo:active {
+  transform: scale(0.96);
+}
+
+body.page-leaving {
+  opacity: 0;
+  transform: scale(0.985);
+  transition: opacity 0.32s ease, transform 0.32s ease;
+}
+
+body.page-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+body.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.45s ease, transform 0.45s ease;
 }
 
 .logo-cookie {
