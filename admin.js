@@ -43,9 +43,11 @@ function api(path, options = {}) {
     const data = await res.json().catch(() => ({}));
     if (res.status === 401) {
       signOut();
-      throw new Error("Session expired");
+      throw new Error("Session expired — please sign in again.");
     }
-    if (!res.ok) throw new Error(data.error || "Request failed");
+    if (!res.ok) {
+      throw new Error(data.error || data.databaseError || `Request failed (${res.status})`);
+    }
     return data;
   });
 }
@@ -60,12 +62,22 @@ function showLogin() {
   loginSection.classList.remove("hidden");
   dashboard.classList.add("hidden");
   logoutBtn.classList.add("hidden");
-  if (pollTimer) clearInterval(pollTimer);
+  if (pollTimer) {
+    clearInterval(pollTimer);
+    pollTimer = null;
+  }
 }
 
 function signOut() {
   setToken(null);
   showLogin();
+}
+
+function showOrdersError(message) {
+  ordersSummary.textContent = "Could not load orders";
+  ordersList.innerHTML = "";
+  adminEmpty.textContent = message;
+  adminEmpty.classList.remove("hidden");
 }
 
 function renderOrders(orders) {
@@ -81,6 +93,8 @@ function renderOrders(orders) {
 
   if (filtered.length === 0) {
     ordersList.innerHTML = "";
+    adminEmpty.textContent =
+      "No orders yet. New orders will appear here when customers submit from the order page.";
     adminEmpty.classList.remove("hidden");
     return;
   }
@@ -135,9 +149,22 @@ function escapeHtml(text) {
 }
 
 async function loadOrders() {
-  const orders = await api("/api/orders");
-  renderOrders(orders);
-  return orders;
+  ordersSummary.textContent = "Loading orders…";
+
+  try {
+    const orders = await api("/api/orders");
+    if (!Array.isArray(orders)) {
+      throw new Error("Server returned invalid data.");
+    }
+    renderOrders(orders);
+    return orders;
+  } catch (err) {
+    showOrdersError(
+      err.message ||
+        "Could not load orders. Check KV_REST_API_URL and KV_REST_API_TOKEN on Render, then redeploy."
+    );
+    throw err;
+  }
 }
 
 function showLoginError(message) {
@@ -153,14 +180,21 @@ loginForm?.addEventListener("submit", async (e) => {
 
   if (window.location.protocol === "file:") {
     showLoginError(
-      "Open admin through the server: http://localhost:8080/admin.html (run start-server.bat first)."
+      "Open admin at https://angel-bakes.onrender.com/admin.html (not from a file on your PC)."
     );
     return;
   }
 
   try {
-    const health = await fetch("/api/health");
-    if (!health.ok) throw new Error("server");
+    const health = await fetch("/api/health").then((r) => r.json());
+    if (!health.ok) throw new Error("Server not ready");
+
+    if (health.storage === "upstash-kv" && health.database === "error") {
+      throw new Error(
+        health.databaseError ||
+          "Order database not connected. Fix KV_REST_API_URL and KV_REST_API_TOKEN on Render."
+      );
+    }
 
     const res = await fetch("/api/admin/login", {
       method: "POST",
@@ -171,7 +205,7 @@ loginForm?.addEventListener("submit", async (e) => {
     const data = await res.json().catch(() => ({}));
 
     if (res.status === 401) {
-      showLoginError("Wrong password. Use angelbakes or check config.json on your PC.");
+      showLoginError("Wrong password. Use the ADMIN_PASSWORD you set on Render.");
       return;
     }
 
@@ -179,20 +213,34 @@ loginForm?.addEventListener("submit", async (e) => {
 
     setToken(data.token);
     showDashboard();
-    await loadOrders();
-    pollTimer = setInterval(loadOrders, 15000);
-  } catch {
+
+    try {
+      await loadOrders();
+      pollTimer = setInterval(() => {
+        loadOrders().catch(() => {});
+      }, 15000);
+    } catch {
+      showLoginError(
+        "Signed in but orders could not load. Check Upstash keys on Render, redeploy, then try again."
+      );
+    }
+  } catch (err) {
     showLoginError(
-      "Cannot reach the shop server. Run start-server.bat, then open http://localhost:8080/admin.html"
+      err.message ||
+        "Cannot reach the shop server. Make sure Render deployed successfully."
     );
   }
 });
 
 logoutBtn?.addEventListener("click", signOut);
 
-refreshBtn?.addEventListener("click", () => loadOrders().catch(() => {}));
+refreshBtn?.addEventListener("click", () => {
+  loadOrders().catch(() => {});
+});
 
-statusFilter?.addEventListener("change", () => loadOrders().catch(() => {}));
+statusFilter?.addEventListener("change", () => {
+  loadOrders().catch(() => {});
+});
 
 ordersList?.addEventListener("click", async (e) => {
   const btn = e.target.closest("[data-action]");
@@ -225,9 +273,11 @@ if (getToken()) {
   showDashboard();
   loadOrders()
     .then(() => {
-      pollTimer = setInterval(loadOrders, 15000);
+      pollTimer = setInterval(() => {
+        loadOrders().catch(() => {});
+      }, 15000);
     })
-    .catch(signOut);
+    .catch(() => {});
 } else {
   showLogin();
 }

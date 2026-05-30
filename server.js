@@ -38,8 +38,24 @@ app.get("/admin.js", (req, res) => sendPublicFile(res, "admin.js"));
 app.get("/styles.css", (req, res) => sendPublicFile(res, "styles.css"));
 
 app.get("/api/health", async (req, res) => {
-  const { useKv } = require("./lib/orders-store");
-  res.json({ ok: true, service: "angel-bakes", storage: useKv() ? "vercel-kv" : "local-file" });
+  const { useKv, readOrders } = require("./lib/orders-store");
+  const payload = {
+    ok: true,
+    service: "angel-bakes",
+    storage: useKv() ? "upstash-kv" : "local-file",
+  };
+
+  if (useKv()) {
+    try {
+      await readOrders();
+      payload.database = "connected";
+    } catch (err) {
+      payload.database = "error";
+      payload.databaseError = err.message;
+    }
+  }
+
+  res.json(payload);
 });
 
 app.post("/api/orders", async (req, res) => {
@@ -94,7 +110,9 @@ app.get("/api/orders", async (req, res) => {
     res.json(await readOrders());
   } catch (err) {
     console.error("GET /api/orders", err);
-    res.status(500).json({ error: "Could not load orders" });
+    res.status(500).json({
+      error: err.message || "Could not load orders",
+    });
   }
 });
 
