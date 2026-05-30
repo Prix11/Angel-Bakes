@@ -6,7 +6,7 @@ Homemade cookie shop — choco chip & Biscoff. Prices: ₱35/pc, ₱100/3 pcs.
 
 1. Double-click **`start-server.bat`**
 2. Shop: http://localhost:8080
-3. Admin: http://localhost:8080/admin.html (password: `angelbakes` or see `config.json`)
+3. Admin: http://localhost:8080/admin.html (password in `.env` or `config.json`)
 
 ## Go live
 
