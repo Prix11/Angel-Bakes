@@ -31,6 +31,7 @@ function sendPublicFile(res, filePath) {
 }
 
 // Explicit routes so JS/CSS always load on cloud hosts
+app.get("/nav.js", (req, res) => sendPublicFile(res, "nav.js"));
 app.get("/order.js", (req, res) => sendPublicFile(res, "order.js"));
 app.get("/main.js", (req, res) => sendPublicFile(res, "main.js"));
 app.get("/admin.js", (req, res) => sendPublicFile(res, "admin.js"));
