@@ -2,15 +2,39 @@ require("dotenv").config();
 
 const express = require("express");
 const crypto = require("crypto");
+const path = require("path");
+const fs = require("fs");
 const { getAdminPassword } = require("./lib/config");
 const { createAdminToken, requireAdmin } = require("./lib/auth");
 const { readOrders, writeOrders } = require("./lib/orders-store");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+const ROOT = __dirname;
 
 app.use(express.json({ limit: "100kb" }));
-app.use(express.static(__dirname));
+
+// Serve static files (HTML, CSS, JS, images)
+app.use(
+  express.static(ROOT, {
+    index: ["index.html"],
+    extensions: ["html", "css", "js", "jpg", "png", "ico", "svg"],
+  })
+);
+
+function sendPublicFile(res, filePath) {
+  const full = path.join(ROOT, filePath);
+  if (fs.existsSync(full)) {
+    return res.sendFile(full);
+  }
+  return res.status(404).send("Not found");
+}
+
+// Explicit routes so JS/CSS always load on cloud hosts
+app.get("/order.js", (req, res) => sendPublicFile(res, "order.js"));
+app.get("/main.js", (req, res) => sendPublicFile(res, "main.js"));
+app.get("/admin.js", (req, res) => sendPublicFile(res, "admin.js"));
+app.get("/styles.css", (req, res) => sendPublicFile(res, "styles.css"));
 
 app.get("/api/health", async (req, res) => {
   const { useKv } = require("./lib/orders-store");
