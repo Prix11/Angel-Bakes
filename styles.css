@@ -171,6 +171,10 @@ body.nav-open {
   overflow: hidden;
 }
 
+body.nav-open .site-header {
+  z-index: 201;
+}
+
 .nav-toggle span {
   display: block;
   width: 24px;

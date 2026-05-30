@@ -30,7 +30,42 @@
   backdrop.addEventListener("click", () => setOpen(false));
 
   nav.querySelectorAll("a, button").forEach((el) => {
-    el.addEventListener("click", () => setOpen(false));
+    el.addEventListener("click", (e) => {
+      if (el.tagName !== "A") {
+        setOpen(false);
+        return;
+      }
+
+      const href = el.getAttribute("href") || "";
+      const hashIndex = href.indexOf("#");
+
+      if (hashIndex !== -1) {
+        const hash = href.slice(hashIndex + 1);
+        const pathPart = href.slice(0, hashIndex);
+        const targetPath = new URL(pathPart || ".", window.location.origin).pathname
+          .replace(/\/$/, "") || "/";
+        const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+        const onSamePage =
+          targetPath === currentPath ||
+          (targetPath === "/" &&
+            (currentPath === "" || currentPath === "/index.html"));
+
+        if (hash && onSamePage) {
+          e.preventDefault();
+          setOpen(false);
+          window.setTimeout(() => {
+            const section = document.getElementById(hash);
+            if (section) {
+              section.scrollIntoView({ behavior: "smooth", block: "start" });
+              history.pushState(null, "", `#${hash}`);
+            }
+          }, 150);
+          return;
+        }
+      }
+
+      setOpen(false);
+    });
   });
 })();
 
