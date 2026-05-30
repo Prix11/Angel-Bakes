@@ -196,7 +196,7 @@ loginForm?.addEventListener("submit", async (e) => {
   }
 
   try {
-    const health = await fetchWithTimeout("/api/health").then((r) => r.json());
+    const health = await fetchWithTimeout("/api/health/db").then((r) => r.json());
     if (!health.ok) throw new Error("Server not ready");
 
     if (health.storage === "upstash-kv" && health.database === "error") {

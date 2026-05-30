@@ -24,13 +24,18 @@ function sendPublicFile(res, filePath) {
 
 // ——— API routes FIRST (before static, so /api/* is never served as .js files) ———
 
-app.get("/api/health", async (req, res) => {
-  const { useKv, readOrders } = require("./lib/orders-store");
-  const payload = {
+app.get("/api/health", (req, res) => {
+  const { useKv } = require("./lib/orders-store");
+  res.json({
     ok: true,
     service: "angel-bakes",
     storage: useKv() ? "upstash-kv" : "local-file",
-  };
+  });
+});
+
+app.get("/api/health/db", async (req, res) => {
+  const { useKv, readOrders } = require("./lib/orders-store");
+  const payload = { ok: true, storage: useKv() ? "upstash-kv" : "local-file" };
 
   if (useKv()) {
     try {
@@ -158,10 +163,13 @@ app.get("/main.js", (req, res) => sendPublicFile(res, "main.js"));
 app.get("/admin.js", (req, res) => sendPublicFile(res, "admin.js"));
 app.get("/styles.css", (req, res) => sendPublicFile(res, "styles.css"));
 
-getAdminPassword().then((password) => {
-  app.listen(PORT, () => {
-    console.log(`Angel Bakes running at http://localhost:${PORT}`);
-    console.log(`Admin: http://localhost:${PORT}/admin.html`);
-    console.log(`Admin password: ${password}`);
+getAdminPassword()
+  .then(() => {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Angel Bakes listening on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to start server:", err);
+    process.exit(1);
   });
-});
