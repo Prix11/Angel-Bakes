@@ -1,10 +1,10 @@
 # Run after creating an empty repo on GitHub
-# Usage: .\push-to-github.ps1 YOUR_GITHUB_USERNAME angel-bakes
+# Usage: .\push-to-github.ps1
+#        .\push-to-github.ps1 Prix11 Angel-Bakes
 
 param(
-  [Parameter(Mandatory = $true)]
-  [string]$Username,
-  [string]$RepoName = "angel-bakes"
+  [string]$Username = "Prix11",
+  [string]$RepoName = "Angel-Bakes"
 )
 
 $ErrorActionPreference = "Stop"
