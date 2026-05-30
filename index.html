@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Angel Bakes — Fresh Cookies, Baked with Love</title>
+  <meta name="description" content="Homemade chocolate chip and Biscoff cookies from Angel Bakes. Order fresh batches for pickup." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a href="index.html" class="logo">
+      <img src="assets/cookie.jpg" alt="" class="logo-cookie" width="40" height="40" />
+      Angel <span>Bakes</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#about">About</a>
+      <a href="#menu">Menu</a>
+      <a href="order.html" class="btn btn-small">Order Now</a>
+    </nav>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <p class="eyebrow">Small-batch · Homemade · Always fresh</p>
+        <h1>Cookies worth<br /><em>crumbling</em> for</h1>
+        <p class="hero-lead">
+          Soft centers, crisp edges, and flavors we're always growing.
+          Start with choco chip and Biscoff — more treats joining the menu soon.
+        </p>
+        <div class="hero-actions">
+          <a href="order.html" class="btn btn-primary">Place an Order</a>
+          <a href="#menu" class="btn btn-ghost">See the Menu</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-glow"></div>
+        <img
+          src="assets/cookie.jpg"
+          alt="Chocolate chip cookie"
+          class="hero-cookie-img"
+          width="340"
+          height="340"
+        />
+      </div>
+    </section>
+
+    <section id="about" class="about">
+      <div class="about-inner">
+        <div class="about-text">
+          <h2>Baked by Angel</h2>
+          <p>
+            Angel Bakes is a small home kitchen with a big sweet tooth. The menu
+            starts with the classics you love today and keeps growing as new flavors
+            are tested, tasted, and perfected.
+          </p>
+          <p>
+            Right now you'll find choco chip and Biscoff — with more cookies on the
+            way. Every batch is made to order in small quantities, with real
+            ingredients and no shortcuts.
+          </p>
+        </div>
+        <ul class="about-stats">
+          <li><strong>+</strong><span>new flavors coming</span></li>
+          <li><strong>₱35</strong><span>per piece</span></li>
+          <li><strong>₱100</strong><span>for 3 pieces</span></li>
+          <li><strong>48h</strong><span>freshness guarantee</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="menu" class="menu-preview">
+      <h2>Our Menu</h2>
+      <p class="section-lead">Today's favorites — more flavors landing on the menu soon.</p>
+      <div class="menu-grid">
+        <article class="menu-card">
+          <div class="menu-card-img menu-card-chip">
+            <img src="assets/cookie.jpg" alt="Chocolate chip cookie" />
+          </div>
+          <div class="menu-card-body">
+            <h3>Choco Chip Cookie</h3>
+            <p>Studded with semi-sweet chips, brown butter notes, and a pinch of sea salt on top.</p>
+            <span class="price">₱35 <small>/ pc</small> · ₱100 <small>/ 3 pcs</small></span>
+          </div>
+        </article>
+        <article class="menu-card">
+          <div class="menu-card-img menu-card-biscoff" role="img" aria-label="Biscoff cookie"></div>
+          <div class="menu-card-body">
+            <h3>Biscoff Cookie</h3>
+            <p>Swirled with cookie-butter spread, warm spice, and a caramelized crunch in every bite.</p>
+            <span class="price">₱35 <small>/ pc</small> · ₱100 <small>/ 3 pcs</small></span>
+          </div>
+        </article>
+      </div>
+      <a href="order.html" class="btn btn-primary">Order Cookies</a>
+    </section>
+
+    <section class="cta-band">
+      <h2>Ready for your next sweet fix?</h2>
+      <p>Order online — we'll confirm pickup details by text or email.</p>
+      <a href="order.html" class="btn btn-light">Start Your Order</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-brand">Angel Bakes</p>
+    <p>Homemade cookies · Local pickup</p>
+    <p class="footer-copy">&copy; <span id="year"></span> Angel Bakes. All rights reserved.</p>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

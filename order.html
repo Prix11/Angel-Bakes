@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order — Angel Bakes</title>
+  <meta name="description" content="Order chocolate chip and Biscoff cookies from Angel Bakes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="order-page">
+  <header class="site-header">
+    <a href="index.html" class="logo">
+      <img src="assets/cookie.jpg" alt="" class="logo-cookie" width="40" height="40" />
+      Angel <span>Bakes</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="index.html#menu">Menu</a>
+      <a href="order.html" class="btn btn-small active">Order</a>
+    </nav>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <main class="order-main">
+    <header class="order-header">
+      <h1>Place Your Order</h1>
+      <p>₱35 per piece · ₱100 for 3 pieces · Mix and match flavors</p>
+    </header>
+
+    <div class="order-layout">
+      <section class="order-menu" aria-labelledby="menu-heading">
+        <h2 id="menu-heading" class="sr-only">Cookie menu</h2>
+
+        <article class="order-item" data-id="choco-chip" data-name="Choco Chip Cookie">
+          <div class="order-item-visual order-item-chip">
+            <img src="assets/cookie.jpg" alt="Chocolate chip cookie" />
+          </div>
+          <div class="order-item-info">
+            <h3>Choco Chip Cookie</h3>
+            <p class="order-item-desc">Semi-sweet chips, brown butter, sea salt finish.</p>
+            <p class="order-item-price">₱35 / pc · ₱100 / 3 pcs</p>
+            <div class="qty-control">
+              <button type="button" class="qty-btn" data-action="decrease" aria-label="Decrease pieces">−</button>
+              <input type="number" class="qty-input" value="0" min="0" max="99" aria-label="Pieces of Choco Chip Cookie" />
+              <button type="button" class="qty-btn" data-action="increase" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="order-item" data-id="biscoff" data-name="Biscoff Cookie">
+          <div class="order-item-visual order-item-biscoff" role="img" aria-label="Biscoff cookie"></div>
+          <div class="order-item-info">
+            <h3>Biscoff Cookie</h3>
+            <p class="order-item-desc">Cookie-butter swirl, warm spice, caramelized edges.</p>
+            <p class="order-item-price">₱35 / pc · ₱100 / 3 pcs</p>
+            <div class="qty-control">
+              <button type="button" class="qty-btn" data-action="decrease" aria-label="Decrease pieces">−</button>
+              <input type="number" class="qty-input" value="0" min="0" max="99" aria-label="Pieces of Biscoff Cookie" />
+              <button type="button" class="qty-btn" data-action="increase" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <aside class="order-summary">
+        <h2>Your Order</h2>
+        <ul class="cart-lines" id="cart-lines">
+          <li class="cart-empty">Add cookies to see your total</li>
+        </ul>
+        <div class="cart-total-row">
+          <span>Total</span>
+          <span class="cart-total" id="cart-total">₱0</span>
+        </div>
+
+        <form class="checkout-form" id="checkout-form">
+          <h3>Pickup Details</h3>
+          <label>
+            <span>Name</span>
+            <input type="text" name="name" required autocomplete="name" placeholder="Your name" />
+          </label>
+          <label>
+            <span>Phone or Email</span>
+            <input type="text" name="contact" required autocomplete="tel" placeholder="Best way to reach you" />
+          </label>
+          <label>
+            <span>Preferred Pickup Date</span>
+            <input type="date" name="pickup-date" required />
+          </label>
+          <label>
+            <span>Notes <small>(optional)</small></span>
+            <textarea name="notes" rows="3" placeholder="Allergies, gift message, etc."></textarea>
+          </label>
+          <button type="submit" class="btn btn-primary btn-block" id="submit-btn" disabled>
+            Submit Order
+          </button>
+          <p class="form-note">We'll confirm your order and pickup time within 24 hours.</p>
+        </form>
+      </aside>
+    </div>
+
+    <dialog class="order-success" id="order-success">
+      <div class="order-success-inner">
+        <div class="success-icon" aria-hidden="true">✓</div>
+        <h2>Order Received!</h2>
+        <p id="success-message"></p>
+        <button type="button" class="btn btn-primary" id="success-close">Order More Cookies</button>
+      </div>
+    </dialog>
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-brand">Angel Bakes</p>
+    <p><a href="index.html">← Back to home</a></p>
+  </footer>
+
+  <script src="main.js"></script>
+  <script src="order.js"></script>
+</body>
+</html>
